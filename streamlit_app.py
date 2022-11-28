@@ -81,7 +81,8 @@ data = AgGrid(orders_df,
        gridOptions=gridOptions,
        allow_unsafe_jscode=True,
        #update_mode=GridUpdateMode.MODEL_CHANGED
-       update_mode=GridUpdateMode.FILTERING_CHANGED
+       update_mode=GridUpdateMode.FILTERING_CHANGED,
+       enable_enterprise_modules=False
 )
 
 
