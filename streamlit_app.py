@@ -7,23 +7,17 @@ from st_aggrid.shared import GridUpdateMode
 from st_aggrid.shared import ColumnsAutoSizeMode
 
 st.set_page_config(page_title="Marketing BI", layout="wide") 
-#st.set_page_config(page_title="Marketing BI", layout="centered") 
-
-st.title('Marketing BI - Project 1')
 new_title = '<p style="font-family:sans-serif; color:#121212; font-size: 42px;">Marketing BI - Project 1</p>'
 
 st.markdown(new_title, unsafe_allow_html=True)
 
-def format(x):
-    return "₹{:,.1f}".format(x)
+@st.experimental_memo(ttl=7200)
+def read_df(path):
+    orders_df = pd.read_csv(path, parse_dates=["Order Date"])
+    return orders_df
 
-def format_pcnt(x):
-    return "{:.1f} %".format(100 * x)
+orders_df = read_df("supermarket_data.csv")
 
-
-orders_df = pd.read_csv("supermarket_data.csv", parse_dates=["Order Date"])
-orders_df["Sales"] = orders_df["Sales"].apply(format)
-orders_df["Discount"] = orders_df["Discount"].apply(format_pcnt)
 cellsytle_jscode = JsCode(
     """
 function(params) {
@@ -46,23 +40,29 @@ function(params) {
 };
 """
 )
-
+        
 gb = GridOptionsBuilder.from_dataframe(orders_df)
 gb.configure_pagination(paginationPageSize=25, paginationAutoPageSize=False)
 gb.configure_column("Category", cellStyle=cellsytle_jscode)
+gb.configure_column("Sales", 
+                    type=["numericColumn","numberColumnFilter","customNumericFormat"], 
+                    valueGetter="data.Sales.toLocaleString('en-US', {style: 'currency', currency: 'INR', maximumFractionDigits:1})") 
+gb.configure_column("Profit", 
+                    type=["numericColumn","numberColumnFilter","customNumericFormat"], 
+                    valueGetter="data.Profit.toLocaleString('en-US', {style: 'currency', currency: 'INR', maximumFractionDigits:1})") 
+gb.configure_column("Discount", 
+                    valueGetter="data.Discount.toLocaleString('en-US', {style: 'percent', maximumFractionDigits:2 })"
+                    ) 
 
 gridOptions = gb.build()
 
 data = AgGrid(orders_df, 
        gridOptions=gridOptions,
        allow_unsafe_jscode=True,
-       #update_mode=GridUpdateMode.MODEL_CHANGED
        update_mode=GridUpdateMode.FILTERING_CHANGED,
        enable_enterprise_modules=False,
        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
        width=10
-       
-            
 )
 
 
