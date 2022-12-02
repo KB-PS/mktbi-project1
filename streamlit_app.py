@@ -7,17 +7,22 @@ from st_aggrid.shared import GridUpdateMode
 from st_aggrid.shared import ColumnsAutoSizeMode
 
 st.set_page_config(page_title="Marketing BI", layout="wide") 
+#st.set_page_config(page_title="Marketing BI", layout="centered") 
+
 st.title('Marketing BI - Project 1')
+new_title = '<p style="font-family:sans-serif; color:#121212; font-size: 42px;">Marketing BI - Project 1</p>'
+
+st.markdown(new_title, unsafe_allow_html=True)
 
 def format(x):
     return "₹{:,.1f}".format(x)
+
 def format_pcnt(x):
     return "{:.1f} %".format(100 * x)
 
 
 orders_df = pd.read_csv("supermarket_data.csv", parse_dates=["Order Date"])
-orders_df["Sales Rup"] = orders_df["Sales"]
-orders_df["Sales Rup"] = orders_df["Sales Rup"].apply(format)
+orders_df["Sales"] = orders_df["Sales"].apply(format)
 orders_df["Discount"] = orders_df["Discount"].apply(format_pcnt)
 cellsytle_jscode = JsCode(
     """
@@ -54,7 +59,8 @@ data = AgGrid(orders_df,
        #update_mode=GridUpdateMode.MODEL_CHANGED
        update_mode=GridUpdateMode.FILTERING_CHANGED,
        enable_enterprise_modules=False,
-       columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS
+       columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+       width=10
        
             
 )
