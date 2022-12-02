@@ -46,12 +46,12 @@ gb.configure_pagination(paginationPageSize=25, paginationAutoPageSize=False)
 gb.configure_column("Category", cellStyle=cellsytle_jscode)
 gb.configure_column("Sales", 
                     type=["numericColumn","numberColumnFilter","customNumericFormat"], 
-                    valueGetter="data.Sales.toLocaleString('en-US', {style: 'currency', currency: 'INR', maximumFractionDigits:1})") 
+                    valueFormatter="data.Sales.toLocaleString('en-US', {style: 'currency', currency: 'INR', maximumFractionDigits:1})") 
 gb.configure_column("Profit", 
                     type=["numericColumn","numberColumnFilter","customNumericFormat"], 
-                    valueGetter="data.Profit.toLocaleString('en-US', {style: 'currency', currency: 'INR', maximumFractionDigits:1})") 
+                    valueFormatter="data.Profit.toLocaleString('en-US', {style: 'currency', currency: 'INR', maximumFractionDigits:1})") 
 gb.configure_column("Discount", 
-                    valueGetter="data.Discount.toLocaleString('en-US', {style: 'percent', maximumFractionDigits:2 })"
+                    valueFormatter="data.Discount.toLocaleString('en-US', {style: 'percent', maximumFractionDigits:2 })"
                     ) 
 
 gridOptions = gb.build()
